@@ -1,0 +1,225 @@
+#include<stdio.h>
+#include<conio.h>
+#include<windows.h>
+void go(short x, short y) 
+{
+COORD pos = {x, y};
+SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+int arr();
+void main()
+{
+
+//*to make square *//
+int i,j,key;
+int x=30,y=6,k=1,edgefor1corfor2=2,a,b,c,d,e,f,g=0,p,q;
+char n;
+for(j=0;j<3;j++)
+{
+go(24,0);
+printf("TIC-TAC-TOE GAME");
+go(24,1+3*j);
+for(i=1;i<=13;i++)
+printf("-");
+go(24,2+j*3);
+for(i=1;i<=4;i++)
+printf("|   ");
+go(24,3+j*3);
+for(i=1;i<=4;i++)
+printf("|   ");
+}
+
+//*square ends here*//
+
+go(x,y);
+printf("X");
+sos:;
+
+
+while(1)        //code for user i.e to know where it have put its 0//
+{key=arr();
+if(key==48 && key!=120)
+break;
+else
+{if(key==72 && y>2)
+y=y-4;
+if(key==75 && x>26)
+x=x-4;
+if(key==77 && x<34)
+x=x+4;
+if(key==80 && y<10)
+y=y+4;
+go(x,y);
+}
+
+}
+k=k+1;
+switch(k)
+{case 2:            // a and b are coordinates where our second X is placed //
+if((x==26 && y==6) || (x==30 && y==10))
+{edgefor1corfor2=1;
+a=34;
+b=2;}
+if((x==30 && y==2) || (x==34 && y==6))
+{edgefor1corfor2=1;
+a=26;
+b=10;}
+if(x==26 && y==2)
+{a=34;
+b=10;}
+if(x==34 && y==2)
+{a=26;
+b=10;}
+if(x==26 && y==10)
+{a=34;
+b=2;
+}
+if(x==34 && y==10)
+{a=26;
+b=2;}
+go(a,b);
+printf("X");
+c=x; //c and d are coordinates where user put 0 for the first time//
+d=y;
+goto sos;
+break;
+
+
+case 3:
+if(edgefor1corfor2==1)   //edge case//
+{
+if(x+a==60 && y+b==12)  //case when user have put his 0 in order to break our line i.e.if(user have put his 0 at corner in our line// 	
+{go(2*c-x,2*d-y);
+printf("X");
+goto sos;	}	
+else            //case when user is fool and allow us to complete our line i.e.allow us to win...user is blind//
+{go(60-a,12-b);
+printf("X");
+go(30,14);
+printf("GAME WON");	}	
+}
+
+
+else    //corner case//	
+{if((x==c && (y==d+4 || y==d-4))||(y==d && (x==c+4 || x==c-4) )) //if 2nd 0 is at edge adjacent to last o//see white copy last pages (mix copy)//
+{go(2*x-c,2*y-d);
+printf("X");
+g=2; //to denote this case within corner case as it have to be used in case 4 //
+p=2*x-c;
+q=2*y-d;
+goto sos;
+
+}
+if((x==a && y==d)||(x==c && y==b ))      //if 2nd 0 at any of 2 corners left
+{go((x+c)/2,(y+d)/2);
+printf("X");
+
+g=1;  //to denote that within CORNER CASE //this case (if 2nd 0 at any of 2 corners// is denoted by g=1 //
+p=(x+c)/2;
+q=(y+d)/2;
+goto sos;
+}
+else
+{g=3;
+if(a==2*x-a && d==2*y-b)
+{go(b,c);
+p=b; q=c;}
+else
+{go(a,d);
+p=a; q=d;}
+printf("X");
+goto sos;
+
+      //remaining case i.e.if 0 placed at edges but not adjacent ones//
+}}
+break;
+
+case 4:
+if(edgefor1corfor2==1) 
+{if(a-c==8 || c-a==8)
+{e=(a+c)/2;      ///e and f are coordinates of point which is between our two "X" on which if X comes we will won// 
+f=b;}
+if(b-d==8 || d-b==8)
+{e=a;
+f=(b+d)/2;}
+
+if(x==e && y==f) //in case user put 0 at e,f coordinates then we will put X at other winning way i.e.by putting X at daigonal corner (this is done here by using 4 if statements below//
+{if(b==f && e<a)
+go(a,b+8);
+if(b==f && e>a)
+go(a,b-8);
+if(b>f && e==a)
+go(a+8,b);
+if(b<f && e==a)
+go(a-8,b);
+printf("X");
+go(30,14);
+printf("GAME WON");
+}
+else
+{
+go(e,f);
+printf("X");
+go(30,14);
+printf("GAME WON");}
+}
+
+//corner case........for case4//
+else
+{
+
+if(g==1)   //case when in last step 0 was placed at corner instead of edge(adj. or non adj.).......within this there r 3 cases which can be done by only 1 pair of if else as shown//
+{if(x==60-p && y==12-q)
+go(2*x-a,2*y-b);
+else
+{go(60-p,12-q);
+printf("X");
+go(30,14);
+printf("GAME WON ");
+}
+printf("X");
+goto sos;
+}
+
+//within corner case if g==2(see case3) cases //
+if(g==2 || g==3)
+{if(x==(p+a)/2 && y==(q+b)/2) //if 0 placed between two X
+{if(c==p && b==q)
+go(a,d);
+else
+go(c,b);
+printf("X");
+go(30,14);
+printf("game won");	}
+
+else                      //if 0 placed anywhere else than above posn//
+go((p+a)/2,(q+b)/2);		
+printf("X");
+go(30,14);
+printf("game won ");
+}
+//within corner case g=3 case
+
+} //corner case for case4 (switch) ends here//
+break;
+
+case 5:
+	go(60-x,12-y);
+	printf("X");
+go(30,14);
+printf("game is Draw.....IT HAPPENS>> Nothin so great");
+
+}  //switch end here//
+}
+
+//main ends here
+//* code for arrow reader function i.e.arr() *//
+int arr()
+{int ch;
+ch = getch();
+  if (ch == 0 || ch==224)
+      ch = getch();
+      else 
+      printf("0");
+   return (ch);
+}
